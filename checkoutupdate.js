@@ -210,6 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     localStorage.removeItem("cart");
 
     alert("Pesanan berhasil dikirim.\nAdmin akan memverifikasi pembayaran kamu.");
-    window.location.href = "home.html";
+    window.location.href = "homeupdatetest.html";
   });
 });
+
