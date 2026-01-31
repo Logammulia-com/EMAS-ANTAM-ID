@@ -26,7 +26,7 @@ function addToCart(item, directBuy = false) {
   const cart = getCart();
   cart.push(item);
   saveCart(cart);
-  if (directBuy) window.location.href = "checkout.html";
+  if (directBuy) window.location.href = "checkoutupdate.html";
 }
 
 async function renderProducts(keyword = "") {
@@ -89,3 +89,4 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("productModal").style.display = "none"
     );
 });
+
