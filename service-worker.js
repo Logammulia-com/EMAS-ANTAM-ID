@@ -2,7 +2,7 @@ self.addEventListener("install", e => {
   e.waitUntil(
     caches.open("antam-cache-v2").then(cache => {
       return cache.addAll([
-        "/",
+        "/index.html",
         "/homeupdatetest.html",
         "/homeupdatetest.css",
         "/homeupdatetest.js",
@@ -31,3 +31,4 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
