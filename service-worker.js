@@ -1,6 +1,6 @@
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open("antam-cache-v1").then(cache => {
+    caches.open("antam-cache-v2").then(cache => {
       return cache.addAll([
         "/",
         "/homeupdatetest.html",
@@ -16,12 +16,18 @@ self.addEventListener("install", e => {
   );
 });
 
-self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      return response || fetch(e.request);
+self.addEventListener("fetch", event => {
+  const url = new URL(event.request.url);
+
+  // 👉 JANGAN cache / intercept API JSONBin atau API luar
+  if (url.origin.includes("jsonbin.io")) {
+    return event.respondWith(fetch(event.request));
+  }
+
+  // Default: cache-first untuk file lokal
+  event.respondWith(
+    caches.match(event.request).then(res => {
+      return res || fetch(event.request);
     })
   );
 });
-
-
