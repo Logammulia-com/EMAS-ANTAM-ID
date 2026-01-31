@@ -1,6 +1,6 @@
 // === KONFIGURASI JSONBIN ===
-const BIN_USERS = "6901583b43b1c97be9887dd7"; 
-const BIN_REKENING = "6901807043b1c97be988e00f"; 
+const BIN_USERS = "6901583b43b1c97be9887dd7";
+const BIN_REKENING = "6901807043b1c97be988e00f";
 const API_KEY = "$2a$10$0anQ3oYLmC5xQJJti0cpMOC9GT3eb1zXjzykbd5Jz92u3qrYuT3F2";
 const BASE_URL = "https://api.jsonbin.io/v3/b/";
 
@@ -96,11 +96,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function renderSavedAddresses() {
     const users = await fetchUsers();
     const current = users.find(u => u.email === user.email);
-    const savedBox = document.getElementById("savedBox");
-    const newBox = document.getElementById("newBox");
 
     if (!current) return;
     if (!current.addresses) current.addresses = [];
+
+    const savedBox = document.getElementById("savedBox");
+    const newBox = document.getElementById("newBox");
 
     if (!current.addresses.length) {
       document.querySelector("input[value='new']").checked = true;
@@ -134,11 +135,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // === STEP 1 -> STEP 2 ===
-  const step1 = document.getElementById("checkoutStep1");
-  const step2 = document.getElementById("checkoutStep2");
-  const paymentInfo = document.getElementById("paymentInfo");
-  const finalTotal = document.getElementById("finalTotal");
-
   document.getElementById("nextToPayment").addEventListener("click", async () => {
     if (!cart.length) return alert("Keranjang kosong!");
 
@@ -165,8 +161,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       No: <strong>${rekening.nomor || "-"}</strong><br>
       a/n ${rekening.nama || "-"}</p>`;
 
-    step1.style.display = "none";
-    step2.style.display = "grid";
+    checkoutStep1.style.display = "none";
+    checkoutStep2.style.display = "grid";
   });
 
   // === SIMPAN ORDER + ALAMAT ===
@@ -177,35 +173,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const users = await fetchUsers();
     const current = users.find(u => u.email === user.email);
+    if (!current.addresses) current.addresses = [];
 
     let shipping = {};
-    let newAddrStr = "";
 
     if (addrOpt === "saved") {
       const idx = document.querySelector("input[name='savedAddr']:checked")?.value;
+      if (idx === undefined) return alert("Pilih alamat dulu.");
       const addr = current.addresses[idx];
-      shipping = {
-        name: user.name,
-        email: user.email,
-        phone: current.phone || "",
-        alamat: addr.alamat
-      };
-      newAddrStr = addr.alamat;
+      shipping = { name: user.name, email: user.email, phone: current.phone || "", alamat: addr.alamat };
     } else {
       const name = checkoutName.value.trim();
       const email = checkoutEmail.value.trim();
       const phone = checkoutPhone.value.trim();
       const alamat = checkoutAlamat.value.trim();
-      newAddrStr = `${name} - ${phone} | ${alamat}`;
-      shipping = { name, email, phone, alamat: newAddrStr };
+      const addrStr = `${name} - ${phone} | ${alamat}`;
+      shipping = { name, email, phone, alamat: addrStr };
 
-      // simpan alamat + jadikan default
       current.addresses.forEach(a => a.isDefault = false);
-      current.addresses.push({ label: "Alamat Baru", alamat: newAddrStr, isDefault: true });
+      current.addresses.push({ label: "Alamat Checkout", alamat: addrStr, isDefault: true });
     }
 
     if (!current.orders) current.orders = [];
-
     current.orders.push({
       id: "ORD-" + Date.now(),
       date: new Date().toLocaleString("id-ID"),
